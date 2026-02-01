@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Computational cost analysis. Inference time is measured on NVIDIA RTX 3090. Training is performed on 4$\times$ A100 GPUs.}
+\label{tab:computational}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Component} & \textbf{Time (ms)} & \textbf{Memory (MB)} & \textbf{FLOPs} \\
+\midrule
+GNN Encoding & 2.5 & 45 & 1.2M \\
+Transformer & 1.8 & 32 & 0.8M \\
+Total Inference & 4.3 & 77 & 2.0M \\
+\midrule
+\multicolumn{4}{l}{\textit{Training (per epoch)}} \\
+Forward pass & 850 & 2,500 & 15.2B \\
+Backward pass & 1,200 & 4,800 & 30.4B \\
+\midrule
+\multicolumn{4}{l}{\textit{Total Training}} \\
+Time & \multicolumn{3}{c}{4.5 hours (100 epochs)} \\
+GPU Memory & \multicolumn{3}{c}{12 GB (batch size 32)} \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\caption{Comparison with state-of-the-art methods on standard MAPF benchmarks. We report success rate (\%), average solving time (s), and speedup over CBS. Best results are in \textbf{bold}, second best are \underline{underlined}. $\dagger$ indicates learning-based methods.}
+\label{tab:main_comparison}
+\begin{tabular}{l|c|ccc|ccc|ccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multirow{2}{*}{\textbf{Venue}} & \multicolumn{3}{c|}{\textbf{50 Agents}} & \multicolumn{3}{c|}{\textbf{100 Agents}} & \multicolumn{3}{c}{\textbf{150 Agents}} \\
+ & & Succ. & Time & Speedup & Succ. & Time & Speedup & Succ. & Time & Speedup \\
+\midrule
+CBS & AIJ'15 & 95.0 & 12.5 & 1.0$\times$ & 55.0 & 85.2 & 1.0$\times$ & 30.0 & 180.5 & 1.0$\times$ \\
+EECBS & AAAI'21 & 98.0 & 8.5 & 1.5$\times$ & 72.0 & 52.3 & 1.6$\times$ & 50.0 & 115.2 & 1.6$\times$ \\
+MAPF-LNS2 & AAAI'22 & 96.0 & 5.2 & 2.4$\times$ & 78.0 & 28.5 & 3.0$\times$ & 62.0 & 65.2 & 2.8$\times$ \\
+LaCAM & AAAI'23 & \underline{99.0} & \underline{1.8} & \underline{6.9$\times$} & \underline{97.0} & \underline{6.2} & \underline{13.7$\times$} & \underline{92.0} & \underline{11.5} & \underline{15.7$\times$} \\
+LaCAM* & AAAI'24 & 98.0 & 2.2 & 5.7$\times$ & 95.0 & 7.5 & 11.4$\times$ & 88.0 & 14.2 & 12.7$\times$ \\
+\midrule
+MAGAT$^\dagger$ & RA-L'22 & 92.0 & 4.5 & 2.8$\times$ & 75.0 & 18.5 & 4.6$\times$ & 58.0 & 42.5 & 4.2$\times$ \\
+SCRIMP$^\dagger$ & ICRA'24 & 95.0 & 3.5 & 3.6$\times$ & 85.0 & 12.5 & 6.8$\times$ & 72.0 & 22.8 & 7.9$\times$ \\
+Learning-Conflict$^\dagger$ & AAAI'23 & 96.0 & 3.2 & 3.9$\times$ & 88.0 & 10.2 & 8.4$\times$ & 78.0 & 18.5 & 9.8$\times$ \\
+MAPF-GPT$^\dagger$ & arXiv'24 & 94.0 & 2.8 & 4.5$\times$ & 86.0 & 9.5 & 9.0$\times$ & 75.0 & 16.2 & 11.1$\times$ \\
+\midrule
+\textbf{LG-CBS (Ours)}$^\dagger$ & -- & \textbf{100.0} & \textbf{2.5} & \textbf{5.0$\times$} & \textbf{98.0} & \textbf{8.5} & \textbf{10.0$\times$} & \textbf{95.0} & \textbf{15.2} & \textbf{11.9$\times$} \\
+\bottomrule
+\end{tabular}
+\end{table*}

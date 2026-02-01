@@ -1,0 +1,74 @@
+{
+  "runs": [
+    {
+      "label": "1769648153",
+      "spindle_utilization": 0.8999999999999999,
+      "estimated_cycle_hours": 9.0,
+      "agv_queue_time": 12,
+      "robot_inspection_rate": 0.1,
+      "disturbances_handled": null,
+      "total_execution_time": 0.070025,
+      "agent_times": {
+        "machine": null,
+        "agv": null,
+        "robot": null
+      }
+    },
+    {
+      "label": "1769665848",
+      "spindle_utilization": 0.8999999999999999,
+      "estimated_cycle_hours": 9.0,
+      "agv_queue_time": 12,
+      "robot_inspection_rate": 0.1,
+      "disturbances_handled": null,
+      "total_execution_time": 0.275827,
+      "agent_times": {
+        "machine": 0.072306,
+        "agv": 0.066588,
+        "robot": 0.136933
+      }
+    },
+    {
+      "label": "1769666258",
+      "spindle_utilization": 0.8999999999999999,
+      "estimated_cycle_hours": 9.0,
+      "agv_queue_time": 12,
+      "robot_inspection_rate": 0.1,
+      "disturbances_handled": null,
+      "total_execution_time": 0.226717,
+      "agent_times": {
+        "machine": 0.067392,
+        "agv": 0.110868,
+        "robot": 0.048457
+      }
+    },
+    {
+      "label": "1769668063",
+      "spindle_utilization": 0.95,
+      "estimated_cycle_hours": 10.8,
+      "agv_queue_time": 12,
+      "robot_inspection_rate": 0.1,
+      "disturbances_handled": 9,
+      "total_execution_time": 0.159738,
+      "agent_times": {
+        "machine": 0.039916,
+        "agv": 0.055574,
+        "robot": 0.064248
+      }
+    },
+    {
+      "label": "1769846401",
+      "spindle_utilization": 0.95,
+      "estimated_cycle_hours": 10.8,
+      "agv_queue_time": 12,
+      "robot_inspection_rate": 0.1,
+      "disturbances_handled": 9,
+      "total_execution_time": 0.1175,
+      "agent_times": {
+        "machine": 0.028932,
+        "agv": 0.050779,
+        "robot": 0.037789
+      }
+    }
+  ]
+}

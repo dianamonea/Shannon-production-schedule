@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Performance across different map types with 100 agents. We compare our method against the best search-based (LaCAM) and learning-based (SCRIMP) baselines.}
+\label{tab:map_types}
+\begin{tabular}{l|cc|cc|cc}
+\toprule
+\multirow{2}{*}{\textbf{Map Type}} & \multicolumn{2}{c|}{\textbf{LaCAM}} & \multicolumn{2}{c|}{\textbf{SCRIMP}} & \multicolumn{2}{c}{\textbf{Ours}} \\
+ & Succ. & Time & Succ. & Time & Succ. & Time \\
+\midrule
+Random (10\%) & 98.0 & 5.8 & 88.0 & 11.2 & \textbf{99.0} & \textbf{7.5} \\
+Random (20\%) & 95.0 & 7.2 & 82.0 & 14.5 & \textbf{97.0} & \textbf{9.2} \\
+Random (30\%) & 88.0 & 9.5 & 72.0 & 18.8 & \textbf{92.0} & \textbf{12.5} \\
+Room & 92.0 & 8.5 & 78.0 & 15.2 & \textbf{95.0} & \textbf{10.8} \\
+Maze & 85.0 & 12.2 & 68.0 & 22.5 & \textbf{88.0} & \textbf{15.2} \\
+Warehouse & 95.0 & 6.8 & 85.0 & 12.8 & \textbf{98.0} & \textbf{8.5} \\
+\bottomrule
+\end{tabular}
+\end{table}

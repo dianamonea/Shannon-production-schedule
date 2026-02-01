@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多智能体交互可视化 - Shannon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes flow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+        .flow-animation {
+            animation: flow 2s infinite;
+        }
+        .agent-card {
+            transition: all 0.3s ease;
+        }
+        .agent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        .disturbance-item {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+        }
+        .timeline-line {
+            width: 2px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="border-b border-slate-700 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-4 sm:py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                            🤖 多智能体交互可视化
+                        </h1>
+                        <p class="text-sm text-slate-400 mt-1">Shannon 生产调度系统 - 具身智能体协同展示</p>
+                    </div>
+                    <button id="refreshBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                        <span>🔄</span> 刷新
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6 sm:py-8">
+            <!-- Agent Status Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <!-- Machine Tool Agent -->
+                <div class="agent-card p-6 rounded-xl bg-gradient-to-br from-orange-900/30 to-red-900/20 border border-orange-700/50 hover:border-orange-500/80">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xl">
+                            ⚙️
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">机床智能体</h3>
+                            <p class="text-xs text-slate-400">CNC-1/2/3</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">处理扰动</span>
+                            <span id="machine-count" class="font-bold text-orange-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">利用率</span>
+                            <span class="font-bold text-orange-400">95%</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-orange-700/30">
+                            <span class="inline-block px-2 py-1 text-xs rounded bg-green-900/40 text-green-300 border border-green-700/50">运行中</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AGV Agent -->
+                <div class="agent-card p-6 rounded-xl bg-gradient-to-br from-blue-900/30 to-cyan-900/20 border border-blue-700/50 hover:border-blue-500/80">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-xl">
+                            📦
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">AGV智能体</h3>
+                            <p class="text-xs text-slate-400">AGV-01/02</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">处理扰动</span>
+                            <span id="agv-count" class="font-bold text-blue-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">利用率</span>
+                            <span class="font-bold text-blue-400">85%</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-blue-700/30">
+                            <span class="inline-block px-2 py-1 text-xs rounded bg-green-900/40 text-green-300 border border-green-700/50">运行中</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Robot Agent -->
+                <div class="agent-card p-6 rounded-xl bg-gradient-to-br from-purple-900/30 to-pink-900/20 border border-purple-700/50 hover:border-purple-500/80">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-xl">
+                            ⚡
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">机器人智能体</h3>
+                            <p class="text-xs text-slate-400">ROBOT-01/02</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">处理扰动</span>
+                            <span id="robot-count" class="font-bold text-purple-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">利用率</span>
+                            <span class="font-bold text-purple-400">90%</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-purple-700/30">
+                            <span class="inline-block px-2 py-1 text-xs rounded bg-green-900/40 text-green-300 border border-green-700/50">运行中</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disturbances Section -->
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-2xl font-bold">⚠️ 检测到的生产扰动</h2>
+                    <span id="disturbance-count" class="px-3 py-1 rounded-full bg-red-900/40 text-red-300 text-sm font-semibold border border-red-700/50">0个</span>
+                </div>
+                <div id="disturbance-list" class="grid gap-3">
+                    <!-- 扰动项目将动态插入这里 -->
+                </div>
+            </div>
+
+            <!-- Interaction Timeline -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">🔄 智能体交互流程</h2>
+                <div id="interaction-timeline" class="space-y-4">
+                    <!-- 交互项目将动态插入这里 -->
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-4 rounded-lg bg-orange-900/30 border border-orange-700/50">
+                    <p class="text-xs text-slate-400 mb-1">机床处理扰动</p>
+                    <p id="stat-machine" class="text-3xl font-bold text-orange-400">0</p>
+                </div>
+                <div class="p-4 rounded-lg bg-blue-900/30 border border-blue-700/50">
+                    <p class="text-xs text-slate-400 mb-1">AGV处理扰动</p>
+                    <p id="stat-agv" class="text-3xl font-bold text-blue-400">0</p>
+                </div>
+                <div class="p-4 rounded-lg bg-purple-900/30 border border-purple-700/50">
+                    <p class="text-xs text-slate-400 mb-1">机器人处理扰动</p>
+                    <p id="stat-robot" class="text-3xl font-bold text-purple-400">0</p>
+                </div>
+                <div class="p-4 rounded-lg bg-red-900/30 border border-red-700/50">
+                    <p class="text-xs text-slate-400 mb-1">总扰动数</p>
+                    <p id="stat-total" class="text-3xl font-bold text-red-400">0</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SEVERITY_COLORS = {
+            critical: 'from-red-900/50 to-red-800/30 border-red-700/50 bg-red-950/20',
+            high: 'from-orange-900/50 to-orange-800/30 border-orange-700/50 bg-orange-950/20',
+            medium: 'from-yellow-900/50 to-yellow-800/30 border-yellow-700/50 bg-yellow-950/20',
+            low: 'from-green-900/50 to-green-800/30 border-green-700/50 bg-green-950/20'
+        };
+
+        const SEVERITY_BADGES = {
+            critical: '🔴 严重',
+            high: '🟠 高',
+            medium: '🟡 中',
+            low: '🟢 低'
+        };
+
+        const AGENT_COLORS = {
+            machine: 'from-orange-400 to-red-500',
+            agv: 'from-blue-400 to-cyan-500',
+            robot: 'from-purple-400 to-pink-500'
+        };
+
+        const AGENT_NAMES = {
+            machine: '机床',
+            agv: 'AGV',
+            robot: '机器人'
+        };
+
+        async function loadData() {
+            try {
+                const response = await fetch('http://localhost:8080/api/latest-schedule');
+                if (!response.ok) throw new Error('API Error');
+                return await response.json();
+            } catch (error) {
+                console.warn('Using mock data');
+                return getMockData();
+            }
+        }
+
+        function getMockData() {
+            return {
+                disturbances_detected: [
+                    {
+                        type: 'urgent_order',
+                        severity: 'critical',
+                        description: '新增紧急订单 PART-URGENT，4小时内完成',
+                        affected_resource: 'new_urgent_part',
+                        impact_duration: 0
+                    },
+                    {
+                        type: 'machine_failure',
+                        severity: 'high',
+                        description: 'CNC-2 主轴轴承过热，需紧急维护',
+                        affected_resource: 'cnc_2',
+                        impact_duration: 120
+                    },
+                    {
+                        type: 'agv_breakdown',
+                        severity: 'high',
+                        description: 'AGV-01 导航系统故障，无法正常运输',
+                        affected_resource: 'AGV-01',
+                        impact_duration: 90
+                    },
+                    {
+                        type: 'quality_issue',
+                        severity: 'medium',
+                        description: 'PART-003 检测发现尺寸偏差，需返工',
+                        affected_resource: 'PART-003',
+                        impact_duration: 45
+                    },
+                    {
+                        type: 'operator_shortage',
+                        severity: 'medium',
+                        description: '夜班操作员请假，人手减少1人',
+                        affected_resource: 'operator_team',
+                        impact_duration: 480
+                    }
+                ],
+                disturbance_responses: [
+                    {
+                        agent: '【机床智能体】MachineToolAgent',
+                        disturbance_type: 'urgent_order',
+                        severity: 'critical',
+                        description: '新增紧急订单 PART-URGENT，4小时内完成',
+                        response: '将紧急订单插入队列首位，重新调整排产序列',
+                        timestamp: '2026-01-29T14:27:43.885363'
+                    },
+                    {
+                        agent: '【机床智能体】MachineToolAgent',
+                        disturbance_type: 'machine_failure',
+                        severity: 'high',
+                        description: 'CNC-2 主轴轴承过热，需紧急维护',
+                        response: '将 cnc_2 的任务转移到其他机床，预计延迟 120 分钟',
+                        timestamp: '2026-01-29T14:27:43.887500'
+                    },
+                    {
+                        agent: '【AGV智能体】AGVCoordinator',
+                        disturbance_type: 'agv_breakdown',
+                        severity: 'high',
+                        description: 'AGV-01 导航系统故障，无法正常运输',
+                        response: '将 AGV-01 的任务分配给其他AGV，启用备用车辆',
+                        timestamp: '2026-01-29T14:27:43.947055'
+                    },
+                    {
+                        agent: '【机器人智能体】RobotCellAgent',
+                        disturbance_type: 'operator_shortage',
+                        severity: 'medium',
+                        description: '夜班操作员请假，人手减少1人',
+                        response: '切换到全自动上下料模式，减少人工干预',
+                        timestamp: '2026-01-29T14:27:43.867233'
+                    }
+                ]
+            };
+        }
+
+        function getAgentTypeFromName(agentName) {
+            if (agentName.includes('机床')) return 'machine';
+            if (agentName.includes('AGV')) return 'agv';
+            if (agentName.includes('机器人')) return 'robot';
+            return 'machine';
+        }
+
+        async function render() {
+            const data = await loadData();
+
+            // 显示扰动
+            const disturbanceList = document.getElementById('disturbance-list');
+            disturbanceList.innerHTML = data.disturbances_detected.map((d, i) => `
+                <div class="disturbance-item p-4 rounded-lg bg-gradient-to-r ${SEVERITY_COLORS[d.severity]} border">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold capitalize">${d.type}</h3>
+                            <p class="text-sm text-slate-300 mt-2">${d.description}</p>
+                            <div class="flex gap-4 text-xs text-slate-400 mt-2">
+                                <span>📍 资源: ${d.affected_resource}</span>
+                                <span>⏱️ 影响: ${d.impact_duration}分钟</span>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-black/30 border border-white/10 whitespace-nowrap">
+                            ${SEVERITY_BADGES[d.severity]}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+
+            // 显示交互流
+            const timeline = document.getElementById('interaction-timeline');
+            timeline.innerHTML = data.disturbance_responses.map((r, i) => {
+                const agentType = getAgentTypeFromName(r.agent);
+                return `
+                    <div class="p-4 rounded-lg border border-slate-700/50 bg-slate-800/30">
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br ${AGENT_COLORS[agentType]} flex items-center justify-center text-white font-bold text-sm">
+                                    ${AGENT_NAMES[agentType][0]}
+                                </div>
+                                ${i < data.disturbance_responses.length - 1 ? '<div class="w-0.5 h-12 bg-slate-700 mt-2"></div>' : ''}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="font-bold">${r.agent.replace(/【|】/g, '').replace('智能体', '')}</span>
+                                    <span class="text-xs text-slate-400">${new Date(r.timestamp).toLocaleTimeString('zh-CN')}</span>
+                                </div>
+                                <div class="mb-3 p-3 rounded bg-blue-900/30 border border-blue-700/50">
+                                    <p class="text-sm"><strong>⚠️ 扰动:</strong> ${r.description}</p>
+                                </div>
+                                <div class="p-3 rounded bg-green-900/30 border border-green-700/50">
+                                    <p class="text-sm"><strong>✅ 应对:</strong> ${r.response}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 更新统计数据
+            const disturbanceCount = data.disturbance_responses.length;
+            const machineCount = data.disturbance_responses.filter(r => r.agent.includes('机床')).length;
+            const agvCount = data.disturbance_responses.filter(r => r.agent.includes('AGV')).length;
+            const robotCount = data.disturbance_responses.filter(r => r.agent.includes('机器人')).length;
+
+            document.getElementById('disturbance-count').textContent = `${data.disturbances_detected.length}个`;
+            document.getElementById('machine-count').textContent = machineCount;
+            document.getElementById('agv-count').textContent = agvCount;
+            document.getElementById('robot-count').textContent = robotCount;
+            document.getElementById('stat-machine').textContent = machineCount;
+            document.getElementById('stat-agv').textContent = agvCount;
+            document.getElementById('stat-robot').textContent = robotCount;
+            document.getElementById('stat-total').textContent = data.disturbances_detected.length;
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', render);
+        render();
+    </script>
+</body>
+</html>

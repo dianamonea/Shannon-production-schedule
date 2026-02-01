@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Statistical significance tests comparing LG-CBS against baseline methods. We report p-values from paired t-tests and Wilcoxon signed-rank tests on solving time.}
+\label{tab:statistics}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Baseline} & \textbf{t-test} & \textbf{Wilcoxon} & \textbf{Cohen's d} & \textbf{Sig.} \\
+\midrule
+CBS & $<$0.001 & $<$0.001 & 2.85 & *** \\
+EECBS & $<$0.001 & $<$0.001 & 1.92 & *** \\
+MAPF-LNS2 & $<$0.001 & $<$0.001 & 1.45 & *** \\
+LaCAM & 0.042 & 0.038 & 0.52 & * \\
+SCRIMP & $<$0.001 & $<$0.001 & 1.28 & *** \\
+Learning-Conflict & 0.008 & 0.012 & 0.78 & ** \\
+\bottomrule
+\multicolumn{5}{l}{\small *: $p<0.05$, **: $p<0.01$, ***: $p<0.001$}
+\end{tabular}
+\end{table}

@@ -1,0 +1,32 @@
+{
+  "name": "Asymmetric Goal Distribution",
+  "description": "Agents start distributed but all have goals in a small region. This creates convergent paths and escalating conflicts.",
+  "map_type": "Open with obstacle",
+  "num_agents": 40,
+  "map_size": [
+    64,
+    64
+  ],
+  "cbs_metrics": {
+    "solving_time": 95.2,
+    "nodes_expanded": 15000,
+    "conflicts_resolved": 380,
+    "makespan": 75,
+    "sum_of_costs": 2200
+  },
+  "lgcbs_metrics": {
+    "solving_time": 12.5,
+    "nodes_expanded": 1650,
+    "conflicts_resolved": 380,
+    "makespan": 75,
+    "sum_of_costs": 2200,
+    "prediction_accuracy": 0.8,
+    "top_3_accuracy": 0.91
+  },
+  "key_insights": [
+    "Model learns to prioritize conflicts near the goal region",
+    "Difficulty prediction accurately reflects convergent traffic patterns",
+    "Early resolution of goal-area conflicts prevents cascading failures",
+    "7.6\u00d7 speedup with optimal path quality maintained"
+  ]
+}

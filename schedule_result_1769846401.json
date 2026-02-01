@@ -1,0 +1,689 @@
+{
+  "session_id": "9e49c67b-f67c-4072-92ec-c5da761228c0",
+  "session_info": {
+    "id": "9e49c67b-f67c-4072-92ec-c5da761228c0",
+    "session_id": "9e49c67b-f67c-4072-92ec-c5da761228c0",
+    "name": "machining_schedule_1769846401",
+    "workflow_id": "task-00000000-0000-0000-0000-000000000002-1769846401",
+    "status": "created",
+    "timestamp": "2026-01-31T16:00:01.510421"
+  },
+  "timestamp": "2026-01-31T16:00:01.637117",
+  "disturbances_detected": [
+    {
+      "type": "quality_issue",
+      "severity": "medium",
+      "description": "PART-003 检测发现尺寸偏差，需返工",
+      "affected_resource": "PART-003",
+      "impact_duration": 45
+    },
+    {
+      "type": "urgent_order",
+      "severity": "critical",
+      "description": "新增紧急订单 PART-URGENT，要求4小时内完成",
+      "affected_resource": "new_urgent_part",
+      "impact_duration": 0
+    },
+    {
+      "type": "tool_damage",
+      "severity": "medium",
+      "description": "CNC-1 铣刀磨损严重，需立即更换",
+      "affected_resource": "cnc_1",
+      "impact_duration": 30
+    },
+    {
+      "type": "material_delay",
+      "severity": "medium",
+      "description": "钛合金原材料供应商延迟2小时交货",
+      "affected_resource": "material_titanium",
+      "impact_duration": 120
+    },
+    {
+      "type": "machine_failure",
+      "severity": "high",
+      "description": "CNC-2 主轴轴承过热，需紧急维护",
+      "affected_resource": "cnc_2",
+      "impact_duration": 120
+    },
+    {
+      "type": "operator_shortage",
+      "severity": "medium",
+      "description": "夜班操作员请假，人手减少1人",
+      "affected_resource": "operator_team",
+      "impact_duration": 480
+    }
+  ],
+  "disturbance_responses": [
+    {
+      "agent": "【机床智能体】MachineToolAgent",
+      "disturbance_type": "quality_issue",
+      "severity": "medium",
+      "description": "PART-003 检测发现尺寸偏差，需返工",
+      "affected_resource": "PART-003",
+      "response": "为 PART-003 预留返工时间 45 分钟",
+      "timestamp": "2026-01-31T16:00:01.513846"
+    },
+    {
+      "agent": "【机床智能体】MachineToolAgent",
+      "disturbance_type": "urgent_order",
+      "severity": "critical",
+      "description": "新增紧急订单 PART-URGENT，要求4小时内完成",
+      "affected_resource": "new_urgent_part",
+      "response": "将紧急订单插入队列首位，重新调整排产序列",
+      "timestamp": "2026-01-31T16:00:01.514854"
+    },
+    {
+      "agent": "【机床智能体】MachineToolAgent",
+      "disturbance_type": "tool_damage",
+      "severity": "medium",
+      "description": "CNC-1 铣刀磨损严重，需立即更换",
+      "affected_resource": "cnc_1",
+      "response": "安排立即更换刀具，预留 30 分钟更换时间",
+      "timestamp": "2026-01-31T16:00:01.514854"
+    },
+    {
+      "agent": "【机床智能体】MachineToolAgent",
+      "disturbance_type": "machine_failure",
+      "severity": "high",
+      "description": "CNC-2 主轴轴承过热，需紧急维护",
+      "affected_resource": "cnc_2",
+      "response": "将 cnc_2 的任务转移到其他机床，预计延迟 120 分钟",
+      "timestamp": "2026-01-31T16:00:01.514854"
+    },
+    {
+      "agent": "【AGV智能体】AGVCoordinator",
+      "disturbance_type": "urgent_order",
+      "severity": "critical",
+      "description": "新增紧急订单 PART-URGENT，要求4小时内完成",
+      "affected_resource": "new_urgent_part",
+      "response": "为紧急订单开辟专用物流通道，优先配送",
+      "timestamp": "2026-01-31T16:00:01.547438"
+    },
+    {
+      "agent": "【AGV智能体】AGVCoordinator",
+      "disturbance_type": "material_delay",
+      "severity": "medium",
+      "description": "钛合金原材料供应商延迟2小时交货",
+      "affected_resource": "material_titanium",
+      "response": "优先配送已到货物料，预留 120 分钟等待时间",
+      "timestamp": "2026-01-31T16:00:01.547438"
+    },
+    {
+      "agent": "【机器人智能体】RobotCellAgent",
+      "disturbance_type": "quality_issue",
+      "severity": "medium",
+      "description": "PART-003 检测发现尺寸偏差，需返工",
+      "affected_resource": "PART-003",
+      "response": "提高抽检比例至 30%，增加关键尺寸检测点",
+      "timestamp": "2026-01-31T16:00:01.597208"
+    },
+    {
+      "agent": "【机器人智能体】RobotCellAgent",
+      "disturbance_type": "urgent_order",
+      "severity": "critical",
+      "description": "新增紧急订单 PART-URGENT，要求4小时内完成",
+      "affected_resource": "new_urgent_part",
+      "response": "为紧急订单预留专用检测通道和返工工位",
+      "timestamp": "2026-01-31T16:00:01.597208"
+    },
+    {
+      "agent": "【机器人智能体】RobotCellAgent",
+      "disturbance_type": "operator_shortage",
+      "severity": "medium",
+      "description": "夜班操作员请假，人手减少1人",
+      "affected_resource": "operator_team",
+      "response": "切换到全自动上下料模式，减少人工干预",
+      "timestamp": "2026-01-31T16:00:01.597208"
+    }
+  ],
+  "machine_tool_scheduling": {
+    "agent": "MachineToolAgent",
+    "status": "completed",
+    "part_count": 6,
+    "process_sequence": [
+      "PART-URGENT",
+      "PART-004",
+      "PART-001",
+      "PART-005",
+      "PART-002",
+      "PART-003"
+    ],
+    "machine_allocation": {
+      "cnc_1": [
+        "PART-URGENT",
+        "PART-004"
+      ],
+      "cnc_2": [
+        "PART-001",
+        "PART-005"
+      ],
+      "cnc_3": [
+        "PART-002",
+        "PART-003"
+      ]
+    },
+    "spindle_utilization": 0.95,
+    "bottleneck": "cnc_2",
+    "estimated_cycle_hours": 10.8,
+    "planning_timestamp": "2026-01-31T16:00:01.542778",
+    "coordination_log": [
+      {
+        "timestamp": "2026-01-31T16:00:01.513846",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "初始化 【机床智能体】MachineToolAgent"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.513846",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "⚠️  检测到扰动: quality_issue"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "📋 应对策略: 为 PART-003 预留返工时间 45 分钟"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "⚠️  检测到扰动: urgent_order"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "📋 应对策略: 将紧急订单插入队列首位，重新调整排产序列"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "⚠️  检测到扰动: tool_damage"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "📋 应对策略: 安排立即更换刀具，预留 30 分钟更换时间"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "⚠️  检测到扰动: machine_failure"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.514854",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "📋 应对策略: 将 cnc_2 的任务转移到其他机床，预计延迟 120 分钟"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.515866",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "向后端提交任务: 【机床智能体】MachineToolAgent"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "后端任务执行成功，工作流ID: None"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "分析零件优先级和加工工序"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "零件排序完成: PART-URGENT -> PART-004 -> PART-001 -> PART-005 -> PART-002 -> PART-003"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "机床分配: CNC-1(2件), CNC-2(2件), CNC-3(2件)"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "计算主轴利用率: 95.0%"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.542778",
+        "agent": "【机床智能体】MachineToolAgent",
+        "message": "执行完成，耗时 0.03 秒"
+      }
+    ]
+  },
+  "agv_coordination": {
+    "agent": "AGVCoordinator",
+    "status": "completed",
+    "agv_count": 2,
+    "material_routes": [
+      {
+        "agv": "AGV-01",
+        "route": "库房->cnc_1"
+      },
+      {
+        "agv": "AGV-02",
+        "route": "库房->cnc_2"
+      }
+    ],
+    "queue_time_minutes": 12,
+    "traffic_hotspot": "通道A",
+    "buffer_strategy": "cnc_2前置缓存2托盘",
+    "coordination_timestamp": "2026-01-31T16:00:01.597208",
+    "coordination_log": [
+      {
+        "timestamp": "2026-01-31T16:00:01.546429",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "初始化 【AGV智能体】AGVCoordinator"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.547438",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "⚠️  检测到扰动: urgent_order"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.547438",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "📋 应对策略: 为紧急订单开辟专用物流通道，优先配送"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.547438",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "⚠️  检测到扰动: material_delay"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.547438",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "📋 应对策略: 优先配送已到货物料，预留 120 分钟等待时间"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.547438",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "向后端提交任务: 【AGV智能体】AGVCoordinator"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.596457",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "后端任务执行成功，工作流ID: None"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.596457",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "分析机床分配需求，规划物料路由"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.596457",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "路由分配: AGV-01 负责 库房->cnc_1"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "路由分配: AGV-02 负责 库房->cnc_2"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "共规划 2 条物料路由"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "分析交通热点和缓冲策略"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【AGV智能体】AGVCoordinator",
+        "message": "执行完成，耗时 0.05 秒"
+      }
+    ]
+  },
+  "robot_coordination": {
+    "agent": "RobotCellAgent",
+    "status": "completed",
+    "robot_count": 2,
+    "cell_assignments": [
+      {
+        "robot": "ROBOT-01",
+        "task": "上下料-PART-URGENT"
+      },
+      {
+        "robot": "ROBOT-02",
+        "task": "上下料-PART-001"
+      }
+    ],
+    "fixture_changeovers": 3,
+    "inspection_rate": 0.1,
+    "rework_buffer": "检测站旁预留2工位",
+    "robot_timestamp": "2026-01-31T16:00:01.634471",
+    "coordination_log": [
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "初始化 【机器人智能体】RobotCellAgent"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "⚠️  检测到扰动: quality_issue"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "📋 应对策略: 提高抽检比例至 30%，增加关键尺寸检测点"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "⚠️  检测到扰动: urgent_order"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "📋 应对策略: 为紧急订单预留专用检测通道和返工工位"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.597208",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "⚠️  检测到扰动: operator_shortage"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.601472",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "📋 应对策略: 切换到全自动上下料模式，减少人工干预"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.601472",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "向后端提交任务: 【机器人智能体】RobotCellAgent"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.633947",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "后端任务执行成功，工作流ID: None"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634471",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "分析零件加工流程，规划机器人任务"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634471",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "任务分配: ROBOT-01 负责 PART-URGENT 的上下料"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634471",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "任务分配: ROBOT-02 负责 PART-001 的上下料"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634471",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "共分配 2 个上下料任务"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634471",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "计算夹具切换次数和抽检策略"
+      },
+      {
+        "timestamp": "2026-01-31T16:00:01.634997",
+        "agent": "【机器人智能体】RobotCellAgent",
+        "message": "执行完成，耗时 0.04 秒"
+      }
+    ]
+  },
+  "coordination_timeline": [
+    {
+      "timestamp": "2026-01-31T16:00:01.513846",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "初始化 【机床智能体】MachineToolAgent"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.513846",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "⚠️  检测到扰动: quality_issue"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "📋 应对策略: 为 PART-003 预留返工时间 45 分钟"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "⚠️  检测到扰动: urgent_order"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "📋 应对策略: 将紧急订单插入队列首位，重新调整排产序列"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "⚠️  检测到扰动: tool_damage"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "📋 应对策略: 安排立即更换刀具，预留 30 分钟更换时间"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "⚠️  检测到扰动: machine_failure"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.514854",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "📋 应对策略: 将 cnc_2 的任务转移到其他机床，预计延迟 120 分钟"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.515866",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "向后端提交任务: 【机床智能体】MachineToolAgent"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "后端任务执行成功，工作流ID: None"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "分析零件优先级和加工工序"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "零件排序完成: PART-URGENT -> PART-004 -> PART-001 -> PART-005 -> PART-002 -> PART-003"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "机床分配: CNC-1(2件), CNC-2(2件), CNC-3(2件)"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "计算主轴利用率: 95.0%"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.542778",
+      "agent": "【机床智能体】MachineToolAgent",
+      "message": "执行完成，耗时 0.03 秒"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.546429",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "初始化 【AGV智能体】AGVCoordinator"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.547438",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "⚠️  检测到扰动: urgent_order"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.547438",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "📋 应对策略: 为紧急订单开辟专用物流通道，优先配送"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.547438",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "⚠️  检测到扰动: material_delay"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.547438",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "📋 应对策略: 优先配送已到货物料，预留 120 分钟等待时间"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.547438",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "向后端提交任务: 【AGV智能体】AGVCoordinator"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.596457",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "后端任务执行成功，工作流ID: None"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.596457",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "分析机床分配需求，规划物料路由"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.596457",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "路由分配: AGV-01 负责 库房->cnc_1"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "路由分配: AGV-02 负责 库房->cnc_2"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "共规划 2 条物料路由"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "分析交通热点和缓冲策略"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【AGV智能体】AGVCoordinator",
+      "message": "执行完成，耗时 0.05 秒"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "初始化 【机器人智能体】RobotCellAgent"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "⚠️  检测到扰动: quality_issue"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "📋 应对策略: 提高抽检比例至 30%，增加关键尺寸检测点"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "⚠️  检测到扰动: urgent_order"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "📋 应对策略: 为紧急订单预留专用检测通道和返工工位"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.597208",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "⚠️  检测到扰动: operator_shortage"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.601472",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "📋 应对策略: 切换到全自动上下料模式，减少人工干预"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.601472",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "向后端提交任务: 【机器人智能体】RobotCellAgent"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.633947",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "后端任务执行成功，工作流ID: None"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634471",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "分析零件加工流程，规划机器人任务"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634471",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "任务分配: ROBOT-01 负责 PART-URGENT 的上下料"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634471",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "任务分配: ROBOT-02 负责 PART-001 的上下料"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634471",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "共分配 2 个上下料任务"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634471",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "计算夹具切换次数和抽检策略"
+    },
+    {
+      "timestamp": "2026-01-31T16:00:01.634997",
+      "agent": "【机器人智能体】RobotCellAgent",
+      "message": "执行完成，耗时 0.04 秒"
+    }
+  ],
+  "execution_summary": {
+    "total_agents_executed": 3,
+    "total_disturbances_handled": 9,
+    "total_execution_time": 0.1175,
+    "status": "completed_successfully",
+    "coordination_process": {
+      "machine_tool_agent": {
+        "status": "completed",
+        "execution_time": 0.028932,
+        "workflow_id": null,
+        "disturbances_handled": 4
+      },
+      "agv_coordinator": {
+        "status": "completed",
+        "execution_time": 0.050779,
+        "workflow_id": null,
+        "coordination_with": [
+          "MachineToolAgent"
+        ],
+        "disturbances_handled": 2
+      },
+      "robot_cell_agent": {
+        "status": "completed",
+        "execution_time": 0.037789,
+        "workflow_id": null,
+        "coordination_with": [
+          "MachineToolAgent",
+          "AGVCoordinator"
+        ],
+        "disturbances_handled": 3
+      }
+    }
+  }
+}

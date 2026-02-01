@@ -1,0 +1,76 @@
+{
+  "hardware": {
+    "cpu": {
+      "name": "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz",
+      "cores": 8,
+      "threads": 16,
+      "architecture": "AMD64"
+    },
+    "memory": {
+      "total_gb": 15.73,
+      "total_bytes": 16885043200
+    },
+    "gpu": [
+      {
+        "name": "NVIDIA GeForce GTX 1650 Ti with Max-Q Design",
+        "memory": "4096 MiB",
+        "driver": "591.74",
+        "compute_capability": "7.5",
+        "vendor": "NVIDIA"
+      }
+    ],
+    "cuda": {
+      "available": true,
+      "version": "13.1",
+      "nvcc_found": false
+    },
+    "python_packages": {
+      "installed": {
+        "numpy": false,
+        "torch": false,
+        "tensorflow": false,
+        "transformers": false,
+        "jax": false,
+        "onnx": false,
+        "accelerate": false,
+        "bitsandbytes": false
+      },
+      "versions": {}
+    },
+    "disk": {
+      "total_gb": 200.0,
+      "used_gb": 127.15,
+      "free_gb": 72.85
+    },
+    "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+  },
+  "assessment": {
+    "deep_learning": {
+      "suitable": true,
+      "level": "Good",
+      "recommendations": [
+        "✅ 可以训练小型模型",
+        "⚠️ 建议使用混合精度训练（FP16）",
+        "⚠️ 批量大小需要限制"
+      ]
+    },
+    "llm": {
+      "suitable": true,
+      "level": "Very Limited",
+      "max_model_size": "1B 模型（4-bit 量化）",
+      "recommendations": [
+        "⚠️ 仅能运行 1-2B 极小模型",
+        "⚠️ 必须使用 4-bit 量化",
+        "💡 建议使用 API 服务代替"
+      ]
+    }
+  },
+  "timestamp": {
+    "system": "Windows",
+    "node": "CHINAMI-I2LQTBU",
+    "release": "11",
+    "version": "10.0.22621",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel"
+  }
+}

@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Generalization performance. Models are trained on one configuration and tested on others. We report success rate (\%).}
+\label{tab:generalization}
+\begin{tabular}{l|ccccc}
+\toprule
+\diagbox{\textbf{Train}}{\textbf{Test}} & \textbf{Random} & \textbf{Room} & \textbf{Maze} & \textbf{Warehouse} & \textbf{Open} \\
+\midrule
+Random & \textbf{95.2} & 82.5 & 78.3 & 85.2 & 92.1 \\
+Room & 80.5 & \textbf{94.8} & 72.5 & 78.5 & 85.2 \\
+Maze & 75.2 & 70.5 & \textbf{93.5} & 72.8 & 78.5 \\
+Warehouse & 82.5 & 75.2 & 70.8 & \textbf{94.2} & 85.5 \\
+Open & 90.5 & 82.5 & 75.2 & 82.8 & \textbf{95.8} \\
+\midrule
+Mixed (All) & 92.5 & 90.2 & 88.5 & 91.8 & 93.5 \\
+\bottomrule
+\end{tabular}
+\end{table}

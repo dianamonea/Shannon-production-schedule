@@ -1,0 +1,261 @@
+# Manufacturing Job Evaluation Prompt Template
+# Used by orchestrator when evaluating job feasibility and assignment
+
+system: |
+  You are an expert manufacturing scheduler for a multi-agent production system.
+  Your role is to evaluate jobs and recommend optimal agent assignments.
+  
+  **Critical Requirements:**
+  - Respect ALL hard constraints (tool availability, deadline, material stock)
+  - Prioritize quality requirements and precision tolerances
+  - Minimize changeover time between different operations
+  - Consider tool wear and maintenance scheduling
+  - Account for downstream dependencies in job sequence
+  - Flag risks early (tight deadlines, unavailable materials)
+
+user: |
+  Please evaluate this manufacturing job and recommend the best agent for assignment:
+  
+  **Job Details:**
+  - JobID: {{.JobID}}
+  - Operation: {{.OperationType}}
+  - Material: {{.MaterialType}} ({{.MaterialQuantity}} units required)
+  - Precision: {{.TargetPrecision}} μm tolerance
+  - Surface Finish: {{.SurfaceFinish}}
+  - Estimated Duration: {{.EstimatedDuration}}
+  - Deadline: {{.Deadline}} ({{.TimeUntilDeadline}} remaining)
+  - Priority: {{.Priority}}/10
+  
+  **Quality Requirements:**
+  - Dimensional Tolerance: ±{{.QualitySpec.DimensionalTolerance}} μm
+  - Surface Roughness: {{.QualitySpec.SurfaceRoughnessRa}} Ra
+  - Inspection: {{.QualitySpec.InspectionMethod}}
+  - Acceptance Rate Required: {{.QualitySpec.AcceptanceRate}}
+  
+  **Available Agents:**
+  {{range .AvailableAgents}}
+  - **{{.AgentID}}** ({{.AgentType}})
+    - Status: {{.Status}} | Load: {{.CurrentLoad}}%
+    - Available Tools: {{.ToolsCapability}}
+    - Material Stock: {{.MaterialAvailability}}
+    - Last Maintenance: {{.LastMaintenanceTime}}
+    - Success Rate: {{.SuccessRate}}%
+    - Avg Quality Score: {{.AverageQualityScore}}/100
+  {{end}}
+  
+  **Constraints:**
+  - Tools required: {{.RequiredTools}}
+  - Material lead time: {{.MaterialLeadTime}} days
+  - Dependent on jobs: {{.DependencyJobIDs}}
+  - Cannot start before: {{.EarliestStartTime}}
+  
+  **Evaluation Criteria (weighted):**
+  1. **Capability Match** (Weight: 30%) - Agent has exact tooling and material
+  2. **Quality Alignment** (Weight: 25%) - Agent's typical quality matches requirement
+  3. **Timeline Feasibility** (Weight: 20%) - Agent can meet deadline with current load
+  4. **Cost Optimization** (Weight: 15%) - Minimize energy use, tool wear, material waste
+  5. **Risk Mitigation** (Weight: 10%) - Consider agent reliability, fault history
+  
+  **Output Format:**
+  ```json
+  {
+    "recommended_agent": "AGENT_ID",
+    "confidence": 0.0-1.0,
+    "feasibility": "FEASIBLE|AT_RISK|INFEASIBLE",
+    "estimated_cost": 0.00,
+    "estimated_quality_score": 0.0-1.0,
+    "start_time_recommendation": "ISO8601",
+    "risks": ["risk1", "risk2"],
+    "alternative_agents": ["AGENT_ID2", "AGENT_ID3"],
+    "reasoning": "explanation"
+  }
+  ```
+
+# Schedule Optimization Prompt Template
+---
+
+user: |
+  Please optimize the production schedule to minimize makespan and cost:
+  
+  **Pending Jobs:**
+  {{range .PendingJobs}}
+  - {{.JobID}}: {{.OperationType}} ({{.EstimatedDuration}}, Priority: {{.Priority}})
+    Deadline: {{.Deadline}}
+    Depends On: {{.DependencyJobIDs}}
+  {{end}}
+  
+  **Available Resources:**
+  {{range .AvailableAgents}}
+  - {{.AgentID}}: Load={{.CurrentLoad}}% Idle={{.EstimatedIdleTime}}
+  {{end}}
+  
+  **Manufacturing Constraints:**
+  - Tool changeover time: 5-15 minutes (group by operation type)
+  - Material stock limits: {{.MaterialConstraints}}
+  - Maximum scheduling horizon: {{.SchedulingHorizon}}
+  - Priority jobs (≥8/10): {{.HighPriorityJobs}}
+  
+  **Optimization Goals (ranked):**
+  1. Minimize total makespan (production time)
+  2. Ensure no deadline violations
+  3. Balance robot utilization (target: 70-85%)
+  4. Minimize tool changeovers
+  5. Reduce material waste and scrap
+  
+  **Output:**
+  ```json
+  {
+    "schedule": [
+      {
+        "job_id": "J001",
+        "assigned_agent": "AGENT_ID",
+        "scheduled_start": "ISO8601",
+        "scheduled_end": "ISO8601",
+        "precedence": ["J000"],
+        "tool_setup_required": ["TOOL_ID"]
+      }
+    ],
+    "metrics": {
+      "total_makespan_hours": 0.0,
+      "average_wait_time_minutes": 0.0,
+      "robot_utilization": {"AGENT_ID": 0.75},
+      "estimated_cost": 0.00,
+      "tool_changes": 0,
+      "deadline_violations": 0
+    },
+    "quality_outlook": 0.95,
+    "risk_warnings": []
+  }
+  ```
+
+# Constraint Satisfaction Prompt Template
+---
+
+user: |
+  Verify if this proposed schedule satisfies all manufacturing constraints:
+  
+  **Proposed Assignment:**
+  - JobID: {{.JobID}}
+  - AgentID: {{.AgentID}}
+  - Start Time: {{.StartTime}}
+  - End Time: {{.EndTime}}
+  
+  **Constraints to Verify:**
+  
+  1. **Deadline Constraint:**
+     - Required By: {{.RequiredDate}}
+     - Scheduled End: {{.ScheduledEnd}}
+     - Compliant: {{.DeadlineCompliant}}
+  
+  2. **Tool Availability:**
+     - Tools Required: {{.RequiredTools}}
+     - Agent Has: {{.AgentTools}}
+     - In Schedule: {{if .ToolConflict}}CONFLICT{{else}}OK{{end}}
+  
+  3. **Material Availability:**
+     - Material: {{.MaterialType}} x {{.MaterialQuantity}}
+     - Stock Available: {{.MaterialStock}}
+     - Lead Time: {{.MaterialLeadTime}}
+     - Supply: {{if .MaterialShortage}}SHORTAGE{{else}}OK{{end}}
+  
+  4. **Precedence Constraints:**
+     - Depends On: {{.PredecessorJobs}}
+     - All Predecessors Complete By {{.PredecessorCompletionTime}}: {{.PrecedenceOK}}
+  
+  5. **Agent Capacity:**
+     - Current Load: {{.CurrentLoad}}%
+     - Job Duration: {{.JobDuration}}
+     - Projected Load After: {{.ProjectedLoad}}%
+     - Capacity Violation: {{.CapacityViolation}}
+  
+  6. **Quality Requirements:**
+     - Required Tolerance: {{.RequiredTolerance}} μm
+     - Agent Capability: {{.AgentCapability}} μm
+     - Quality Match: {{if .QualityViolation}}UNMET{{else}}OK{{end}}
+  
+  **Your Task:**
+  - Report any constraint violations
+  - If violations exist, suggest corrections (defer job, reassign, expedite material)
+  - Provide confidence level (0-100%) that assignment will succeed
+  
+  ```json
+  {
+    "feasible": true|false,
+    "violations": [
+      {
+        "constraint_type": "CONSTRAINT_NAME",
+        "severity": "CRITICAL|WARNING|INFO",
+        "description": "what is violated",
+        "suggested_fix": "how to resolve"
+      }
+    ],
+    "success_confidence": 0.0-1.0,
+    "notes": "additional context"
+  }
+  ```
+
+# Resource Planning Prompt Template
+---
+
+user: |
+  Plan material and tool procurement for the next production batch:
+  
+  **Upcoming Production (Next {{.PlanningHorizonDays}} days):**
+  {{range .PlannedJobs}}
+  - {{.JobID}}: {{.OperationType}}
+    Materials: {{.MaterialBOM}}
+    Tools: {{.ToolingRequirements}}
+    Scheduled: {{.ScheduledTime}} ({{.TimeUntilScheduled}} away)
+  {{end}}
+  
+  **Current Inventory:**
+  - Materials: {{.MaterialInventory}}
+  - Tools: {{.ToolInventory}}
+  - Budget: {{.RemainingBudget}}
+  
+  **Supply Chain:**
+  - Material Lead Times: {{.MaterialLeadTimes}}
+  - Tool Lead Times: {{.ToolLeadTimes}}
+  - Supplier Costs: {{.SupplierCosts}}
+  - Storage Capacity: {{.StorageCapacity}}
+  
+  **Constraints:**
+  - Budget Limit: {{.BudgetLimit}}
+  - Storage Limit: {{.StorageLimit}}
+  - Expedite Cost Multiplier: {{.ExpediteMultiplier}}x
+  - Supplier Reliability: {{.SupplierReliability}}%
+  
+  **Planning Goals:**
+  1. Ensure no material/tool shortages
+  2. Minimize inventory carrying costs
+  3. Optimize order batching (reduce shipping cost)
+  4. Account for lead times and safety stock
+  5. Flag long-lead-time items early
+  
+  ```json
+  {
+    "material_orders": [
+      {
+        "material_id": "MATERIAL_ID",
+        "quantity": 0.0,
+        "supplier": "SUPPLIER_NAME",
+        "unit_cost": 0.00,
+        "lead_time_days": 0,
+        "order_date": "ISO8601",
+        "required_by": "ISO8601"
+      }
+    ],
+    "tool_orders": [
+      {
+        "tool_id": "TOOL_ID",
+        "quantity": 0,
+        "unit_cost": 0.00,
+        "lead_time_days": 0
+      }
+    ],
+    "total_cost": 0.00,
+    "cost_vs_budget": 0.00,
+    "long_lead_items": ["ITEM_ID"],
+    "risk_warnings": []
+  }
+  ```

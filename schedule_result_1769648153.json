@@ -1,0 +1,96 @@
+{
+  "session_id": "session-1769648153",
+  "timestamp": "2026-01-29T08:55:53.116834",
+  "machine_tool_scheduling": {
+    "agent": "MachineToolAgent",
+    "status": "completed",
+    "part_count": 5,
+    "process_sequence": [
+      "PART-004",
+      "PART-001",
+      "PART-005",
+      "PART-002",
+      "PART-003"
+    ],
+    "machine_allocation": {
+      "cnc_1": [
+        "PART-004",
+        "PART-001"
+      ],
+      "cnc_2": [
+        "PART-005",
+        "PART-002"
+      ],
+      "cnc_3": [
+        "PART-003"
+      ]
+    },
+    "spindle_utilization": 0.8999999999999999,
+    "bottleneck": "cnc_2",
+    "estimated_cycle_hours": 9.0,
+    "planning_timestamp": "2026-01-29T08:55:53.072895"
+  },
+  "agv_coordination": {
+    "agent": "AGVCoordinator",
+    "status": "completed",
+    "agv_count": 2,
+    "material_routes": [
+      {
+        "agv": "AGV-01",
+        "route": "库房->cnc_1"
+      },
+      {
+        "agv": "AGV-02",
+        "route": "库房->cnc_2"
+      },
+      {
+        "agv": "AGV-01",
+        "route": "库房->cnc_3"
+      },
+      {
+        "agv": "AGV-02",
+        "route": "cnc_2->检测站"
+      }
+    ],
+    "queue_time_minutes": 12,
+    "traffic_hotspot": "通道A",
+    "buffer_strategy": "cnc_2前置缓存2托盘",
+    "coordination_timestamp": "2026-01-29T08:55:53.105769"
+  },
+  "robot_coordination": {
+    "agent": "RobotCellAgent",
+    "status": "completed",
+    "robot_count": 2,
+    "cell_assignments": [
+      {
+        "robot": "ROBOT-01",
+        "task": "上下料-PART-001"
+      },
+      {
+        "robot": "ROBOT-02",
+        "task": "上下料-PART-002"
+      },
+      {
+        "robot": "ROBOT-01",
+        "task": "上下料-PART-003"
+      },
+      {
+        "robot": "ROBOT-02",
+        "task": "上下料-PART-004"
+      },
+      {
+        "robot": "ROBOT-01",
+        "task": "上下料-PART-005"
+      }
+    ],
+    "fixture_changeovers": 3,
+    "inspection_rate": 0.1,
+    "rework_buffer": "检测站旁预留2工位",
+    "robot_timestamp": "2026-01-29T08:55:53.115267"
+  },
+  "execution_summary": {
+    "total_agents_executed": 3,
+    "total_execution_time": 0.070025,
+    "status": "completed_successfully"
+  }
+}

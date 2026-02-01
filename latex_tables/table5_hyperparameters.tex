@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering
+\caption{Hyperparameter settings for LG-CBS. We use these values for all experiments unless otherwise specified.}
+\label{tab:hyperparameters}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Hyperparameter} & \textbf{Value} & \textbf{Search Range} \\
+\midrule
+\multicolumn{3}{l}{\textit{GNN Encoder}} \\
+\quad Number of layers & 3 & [1, 5] \\
+\quad Hidden dimension & 128 & [32, 256] \\
+\quad Aggregation & mean & \{sum, mean, max\} \\
+\midrule
+\multicolumn{3}{l}{\textit{Transformer}} \\
+\quad Number of heads & 4 & [1, 8] \\
+\quad Number of layers & 2 & [1, 4] \\
+\quad Feed-forward dim & 256 & [128, 512] \\
+\quad Dropout & 0.1 & [0, 0.3] \\
+\midrule
+\multicolumn{3}{l}{\textit{Training}} \\
+\quad Learning rate & 1e-3 & [1e-4, 1e-2] \\
+\quad Batch size & 32 & [16, 128] \\
+\quad Weight decay & 1e-5 & [1e-6, 1e-4] \\
+\quad Epochs & 100 & -- \\
+\quad Early stopping & 10 epochs & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

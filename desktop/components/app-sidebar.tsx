@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Plus, History, Sparkles, Microscope, Bot, Settings, LogOut } from "lucide-react";
+import { Plus, History, Sparkles, Microscope, Bot, Settings, LogOut, Workflow } from "lucide-react";
 import { logout, getStoredUser } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useEffect, useState, Suspense, useCallback, useRef } from "react";
@@ -112,6 +112,12 @@ function SidebarInner() {
       icon: Plus,
       href: "/run-detail?session_id=new",
       active: pathname.startsWith("/run-detail") && currentSessionId === "new",
+    },
+    {
+      label: "Agent Interaction",
+      icon: Workflow,
+      href: "/agent-interaction",
+      active: pathname.startsWith("/agent-interaction"),
     },
     {
       label: "My Agents",

@@ -1,0 +1,32 @@
+{
+  "name": "Bottleneck Scenario",
+  "description": "Multiple agents must pass through a narrow corridor, causing significant conflicts. This scenario demonstrates how LG-CBS identifies critical conflicts early and resolves them efficiently.",
+  "map_type": "Custom Bottleneck",
+  "num_agents": 20,
+  "map_size": [
+    32,
+    32
+  ],
+  "cbs_metrics": {
+    "solving_time": 45.2,
+    "nodes_expanded": 8500,
+    "conflicts_resolved": 180,
+    "makespan": 42,
+    "sum_of_costs": 720
+  },
+  "lgcbs_metrics": {
+    "solving_time": 8.5,
+    "nodes_expanded": 950,
+    "conflicts_resolved": 180,
+    "makespan": 42,
+    "sum_of_costs": 720,
+    "prediction_accuracy": 0.85,
+    "top_3_accuracy": 0.95
+  },
+  "key_insights": [
+    "LG-CBS correctly identifies the corridor entry points as high-priority conflicts",
+    "The GNN captures the spatial bottleneck structure effectively",
+    "Transformer ranks conflicts by their downstream impact",
+    "5.3\u00d7 speedup achieved while maintaining optimal solution quality"
+  ]
+}

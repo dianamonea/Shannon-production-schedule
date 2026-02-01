@@ -1,0 +1,37 @@
+{
+  "identified_components": [],
+  "missing_features": [],
+  "integration_points": [],
+  "priority_modules": [
+    {
+      "rank": 1,
+      "module": "Material Flow Management",
+      "reason": "Essential for realistic scheduling",
+      "file": "go/orchestrator/internal/workflows/material_flow.go"
+    },
+    {
+      "rank": 2,
+      "module": "Dynamic Replanning Engine",
+      "reason": "Handle real-world disruptions",
+      "file": "go/orchestrator/internal/workflows/scheduling/dynamic_replanning.go"
+    },
+    {
+      "rank": 3,
+      "module": "Multi-Embodiment Coordinator",
+      "reason": "Coordinate heterogeneous agents",
+      "file": "python/shannon/agents/embodiment_coordinator.py"
+    },
+    {
+      "rank": 4,
+      "module": "Quality/Rework Handler",
+      "reason": "Production resilience",
+      "file": "go/orchestrator/internal/workflows/quality_recovery.go"
+    },
+    {
+      "rank": 5,
+      "module": "Advanced Communication Protocol",
+      "reason": "Explicit agent coordination",
+      "file": "protos/embodiment_communication.proto"
+    }
+  ]
+}

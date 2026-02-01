@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>优化效果可视化报告</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #161a22;
+      --card-2: #11151c;
+      --border: #232833;
+      --text: #e8e8e8;
+      --muted: #9aa0a6;
+      --accent: #2f80ed;
+      --green: #27ae60;
+      --orange: #f2994a;
+      --red: #eb5757;
+      --purple: #9b51e0;
+      --cyan: #56ccf2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 26px; margin: 0 0 6px; }
+    .subtitle { color: var(--muted); margin-bottom: 16px; }
+    .grid { display: grid; gap: 12px; }
+    .grid.kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.charts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .kpi-card { background: var(--card-2); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+    .kpi-title { font-size: 12px; color: var(--muted); }
+    .kpi-value { font-size: 20px; margin-top: 4px; }
+    .kpi-delta { font-size: 12px; margin-top: 6px; color: var(--muted); }
+    .chart-title { font-size: 14px; color: #cbd5e1; margin: 4px 0 10px; }
+    canvas { width: 100% !important; height: 260px !important; }
+    .wide canvas { height: 320px !important; }
+    .note { color: var(--muted); font-size: 12px; }
+    .table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .table th, .table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 11px; background: #1e2533; }
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    @media (max-width: 980px) {
+      .grid.kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.charts { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>优化效果可视化报告</h1>
+    <div class="subtitle">基于 schedule_result_*.json 自动汇总，展示优化前后趋势与对比</div>
+
+    <div class="card">
+      <div class="grid kpi" id="kpiGrid"></div>
+    </div>
+
+    <div class="grid charts">
+      <div class="card wide">
+        <div class="chart-title">核心指标趋势（双轴）</div>
+        <canvas id="trendChart"></canvas>
+        <div class="legend">
+          <span><span class="dot" style="background: var(--accent)"></span>主轴利用率(%)</span>
+          <span><span class="dot" style="background: var(--purple)"></span>预计加工时长(小时)</span>
+          <span><span class="dot" style="background: var(--cyan)"></span>总执行时间(秒)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="chart-title">优化进度指数（相对首轮）</div>
+        <canvas id="improveChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="chart-title">扰动处理与物流等待</div>
+        <canvas id="disturbanceChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="chart-title">机器人抽检率与AGV排队</div>
+        <canvas id="qualityChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="chart-title">最新运行：三智能体执行时间占比</div>
+        <canvas id="agentTimeChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">最近两次运行对比</div>
+      <table class="table" id="compareTable"></table>
+    </div>
+
+    <div class="card">
+      <div class="chart-title">已完成优化点概览（精简版）</div>
+      <table class="table">
+        <tr><th>模块</th><th>优化内容</th></tr>
+        <tr><td>世界模型</td><td>对象新鲜度/置信度、可供性评分、批量碰撞风险检测、过期占用清理</td></tr>
+        <tr><td>语义感知</td><td>语义观测 JSON 导出/导入链路完善，场景图构建与传感器校准增强</td></tr>
+        <tr><td>调度/重规划</td><td>空间风险惩罚接入评分，动态成本模型更新，仿真风险扫描</td></tr>
+        <tr><td>技能与运动</td><td>技能参数校验、约束校验、轨迹生成与简易规划器补全</td></tr>
+        <tr><td>多智能体</td><td>MAPF 边冲突规避、CBBA 去中心化任务分配</td></tr>
+        <tr><td>质量恢复</td><td>质量风险预测、调查回调与冷却机制</td></tr>
+        <tr><td>学习闭环</td><td>在线学习权重建议导出与调度条件联动</td></tr>
+        <tr><td>协议与稳健性</td><td>TTL/心跳增强，异常场景下的安全默认策略</td></tr>
+        <tr><td>测试覆盖</td><td>关键模块新增/补充单元测试，覆盖语义导入与风险逻辑</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="note">说明：图表自动读取 reports/optimization_report_data.json。若数据不足，将显示为空。</div>
+    </div>
+  </div>
+
+  <script>
+    const format = (v, d = 2) => (v === null || v === undefined || Number.isNaN(v)) ? '-' : Number(v).toFixed(d);
+    const toPercent = (v) => (v === null || v === undefined) ? null : (v <= 1 ? v * 100 : v);
+
+    fetch('./optimization_report_data.json')
+      .then(r => r.json())
+      .then(({ runs }) => {
+        if (!runs || runs.length === 0) return;
+
+        const labels = runs.map(r => r.label);
+        const util = runs.map(r => toPercent(r.spindle_utilization));
+        const cycle = runs.map(r => r.estimated_cycle_hours ?? null);
+        const exec = runs.map(r => r.total_execution_time ?? null);
+        const agvQueue = runs.map(r => r.agv_queue_time ?? null);
+        const inspect = runs.map(r => toPercent(r.robot_inspection_rate));
+        const disturbance = runs.map(r => r.disturbances_handled ?? null);
+
+        const latest = runs[runs.length - 1];
+        const prev = runs.length > 1 ? runs[runs.length - 2] : null;
+
+        const baseline = runs[0];
+        const kpis = [
+          { title: '运行次数', value: runs.length, delta: null },
+          { title: '主轴利用率(最新)', value: `${format(toPercent(latest.spindle_utilization), 1)}%`, delta: prev ? (toPercent(latest.spindle_utilization) - toPercent(prev.spindle_utilization)) : null, base: baseline ? (toPercent(latest.spindle_utilization) - toPercent(baseline.spindle_utilization)) : null },
+          { title: '预计加工时长(最新)', value: `${format(latest.estimated_cycle_hours, 2)}h`, delta: prev ? (latest.estimated_cycle_hours - prev.estimated_cycle_hours) : null, base: baseline ? (latest.estimated_cycle_hours - baseline.estimated_cycle_hours) : null },
+          { title: '扰动处理(最新)', value: latest.disturbances_handled ?? '-', delta: prev ? (latest.disturbances_handled - prev.disturbances_handled) : null, base: baseline ? (latest.disturbances_handled - baseline.disturbances_handled) : null },
+        ];
+
+        const kpiGrid = document.getElementById('kpiGrid');
+        kpis.forEach(k => {
+          const el = document.createElement('div');
+          el.className = 'kpi-card';
+          const delta = k.delta === null || k.delta === undefined ? '' : `Δ(上次) ${format(k.delta, 2)}`;
+          const base = k.base === null || k.base === undefined ? '' : `Δ(首轮) ${format(k.base, 2)}`;
+          el.innerHTML = `<div class="kpi-title">${k.title}</div><div class="kpi-value">${k.value}</div><div class="kpi-delta">${delta} ${base}</div>`;
+          kpiGrid.appendChild(el);
+        });
+
+        const ctxTrend = document.getElementById('trendChart');
+        new Chart(ctxTrend, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: '主轴利用率(%)', data: util, borderColor: '#2f80ed', backgroundColor: 'rgba(47,128,237,0.2)', yAxisID: 'y', tension: 0.35, fill: true, pointRadius: 3 },
+              { label: '预计加工时长(小时)', data: cycle, borderColor: '#9b51e0', backgroundColor: 'rgba(155,81,224,0.15)', yAxisID: 'y1', tension: 0.35, fill: true, pointRadius: 3 },
+              { label: '总执行时间(秒)', data: exec, borderColor: '#56ccf2', backgroundColor: 'rgba(86,204,242,0.15)', yAxisID: 'y1', tension: 0.35, fill: true, pointRadius: 3 },
+            ]
+          },
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+              y: { title: { display: true, text: '主轴利用率(%)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              y1: { position: 'right', title: { display: true, text: '时长/秒' }, grid: { drawOnChartArea: false } }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+
+        const ctxDist = document.getElementById('disturbanceChart');
+        new Chart(ctxDist, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              { label: '扰动处理数量', data: disturbance, backgroundColor: '#f2994a' },
+              { label: 'AGV排队时间(分钟)', data: agvQueue, backgroundColor: '#27ae60' },
+            ]
+          },
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } }
+          }
+        });
+
+        const ctxQuality = document.getElementById('qualityChart');
+        new Chart(ctxQuality, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: '机器人抽检率(%)', data: inspect, borderColor: '#eb5757', backgroundColor: 'rgba(235,87,87,0.15)', tension: 0.35, fill: true, pointRadius: 3 },
+              { label: 'AGV排队时间(分钟)', data: agvQueue, borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.15)', tension: 0.35, fill: true, pointRadius: 3 },
+            ]
+          },
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } }
+          }
+        });
+
+        const ctxAgent = document.getElementById('agentTimeChart');
+        const m = latest.agent_times?.machine ?? 0;
+        const a = latest.agent_times?.agv ?? 0;
+        const r = latest.agent_times?.robot ?? 0;
+        new Chart(ctxAgent, {
+          type: 'doughnut',
+          data: {
+            labels: ['机床', 'AGV', '机器人'],
+            datasets: [{ data: [m, a, r], backgroundColor: ['#27ae60', '#f2994a', '#eb5757'] }]
+          },
+          options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        const improve = (idx) => {
+          const base = runs[0];
+          const cur = runs[idx];
+          if (!base || !cur) return null;
+          const u0 = toPercent(base.spindle_utilization) ?? 0;
+          const u1 = toPercent(cur.spindle_utilization) ?? 0;
+          const c0 = base.estimated_cycle_hours ?? 0;
+          const c1 = cur.estimated_cycle_hours ?? 0;
+          const q0 = base.agv_queue_time ?? 0;
+          const q1 = cur.agv_queue_time ?? 0;
+          const e0 = base.total_execution_time ?? 0;
+          const e1 = cur.total_execution_time ?? 0;
+          const d0 = base.disturbances_handled ?? 0;
+          const d1 = cur.disturbances_handled ?? 0;
+
+          const gain = (a, b, higherBetter = true) => {
+            if (a === 0 && b === 0) return 0;
+            const diff = higherBetter ? (b - a) : (a - b);
+            return diff / (Math.abs(a) + 1e-6);
+          };
+
+          const g1 = gain(u0, u1, true);
+          const g2 = gain(c0, c1, false);
+          const g3 = gain(q0, q1, false);
+          const g4 = gain(e0, e1, false);
+          const g5 = gain(d0, d1, true);
+          const score = (g1 * 0.25 + g2 * 0.25 + g3 * 0.2 + g4 * 0.2 + g5 * 0.1) * 100;
+          return Number.isFinite(score) ? score : 0;
+        };
+
+        const improveSeries = runs.map((_, i) => improve(i));
+        const ctxImprove = document.getElementById('improveChart');
+        new Chart(ctxImprove, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              { label: '优化进度指数(%)', data: improveSeries, borderColor: '#2f80ed', backgroundColor: 'rgba(47,128,237,0.2)', tension: 0.35, fill: true, pointRadius: 3 }
+            ]
+          },
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } }
+          }
+        });
+
+        const table = document.getElementById('compareTable');
+        const rows = [
+          ['指标', '上一次', '最新', '变化'],
+          ['主轴利用率(%)', format(toPercent(prev?.spindle_utilization), 1), format(toPercent(latest.spindle_utilization), 1), format(toPercent(latest.spindle_utilization) - toPercent(prev?.spindle_utilization), 1)],
+          ['预计加工时长(小时)', format(prev?.estimated_cycle_hours), format(latest.estimated_cycle_hours), format((latest.estimated_cycle_hours ?? 0) - (prev?.estimated_cycle_hours ?? 0))],
+          ['AGV排队时间(分钟)', format(prev?.agv_queue_time), format(latest.agv_queue_time), format((latest.agv_queue_time ?? 0) - (prev?.agv_queue_time ?? 0))],
+          ['机器人抽检率(%)', format(toPercent(prev?.robot_inspection_rate), 1), format(toPercent(latest.robot_inspection_rate), 1), format(toPercent(latest.robot_inspection_rate) - toPercent(prev?.robot_inspection_rate), 1)],
+          ['扰动处理数量', prev?.disturbances_handled ?? '-', latest.disturbances_handled ?? '-', (latest.disturbances_handled ?? 0) - (prev?.disturbances_handled ?? 0)],
+          ['总执行时间(秒)', format(prev?.total_execution_time), format(latest.total_execution_time), format((latest.total_execution_time ?? 0) - (prev?.total_execution_time ?? 0))]
+        ];
+
+        table.innerHTML = rows.map((row, i) => {
+          const cells = row.map((c) => `<${i === 0 ? 'th' : 'td'}>${c}</${i === 0 ? 'th' : 'td'}>`).join('');
+          return `<tr>${cells}</tr>`;
+        }).join('');
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang='zh-CN'>
+<head>
+<meta charset='utf-8' />
+<title>优化效果可视化报告</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#0f1115; color:#e8e8e8; margin:0; padding:24px; }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  .subtitle { color:#9aa0a6; margin-bottom: 16px; }
+  .card { background:#161a22; border:1px solid #232833; border-radius:12px; padding:16px 18px; margin: 12px 0; }
+  .chart { margin-top: 12px; }
+  .chart-title { margin: 8px 0 6px; font-size: 14px; color:#cbd5e1; }
+  .kv { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; }
+  .kv div { background:#11151c; border:1px solid #232833; border-radius:10px; padding:10px; }
+  .kv .k { color:#9aa0a6; font-size: 12px; }
+  .kv .v { font-size: 18px; margin-top:4px; }
+  .note { color:#9aa0a6; font-size: 12px; }
+</style>
+</head>
+<body>
+  <div class='container'>
+    <h1>优化效果可视化报告</h1>
+    <div class='subtitle'>基于现有 schedule_result_*.json 运行结果生成的趋势与对比图</div>
+
+    <div class='card'>
+      <div class='kv'>
+        <div><div class='k'>运行次数</div><div class='v'>5</div></div>
+        <div><div class='k'>最新会话</div><div class='v'>1769846401</div></div>
+        <div><div class='k'>扰动处理（最新）</div><div class='v'>9</div></div>
+      </div>
+    </div>
+
+    <div class='card'>
+      
+    <div class='chart'>
+      <div class='chart-title'>主轴利用率(%)</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,180.00 360.00,180.00 520.00,40.00 680.00,40.00' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='520.00' cy='40.00' r='3' fill='#2F80ED'/><circle cx='680.00' cy='40.00' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='40.00' font-size='11' fill='#2F80ED'>95.00</text>
+      </svg>
+    </div>
+    
+    <div class='chart'>
+      <div class='chart-title'>预计加工时长(小时)</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,180.00 360.00,180.00 520.00,40.00 680.00,40.00' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='520.00' cy='40.00' r='3' fill='#2F80ED'/><circle cx='680.00' cy='40.00' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='40.00' font-size='11' fill='#2F80ED'>10.80</text>
+      </svg>
+    </div>
+    
+    <div class='chart'>
+      <div class='chart-title'>AGV排队时间(分钟)</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,180.00 360.00,180.00 520.00,180.00 680.00,180.00' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='520.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='680.00' cy='180.00' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='180.00' font-size='11' fill='#2F80ED'>12.00</text>
+      </svg>
+    </div>
+    
+    <div class='chart'>
+      <div class='chart-title'>机器人抽检率(%)</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,180.00 360.00,180.00 520.00,180.00 680.00,180.00' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='520.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='680.00' cy='180.00' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='180.00' font-size='11' fill='#2F80ED'>10.00</text>
+      </svg>
+    </div>
+    
+    <div class='chart'>
+      <div class='chart-title'>扰动处理数量</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,180.00 360.00,180.00 520.00,40.00 680.00,40.00' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='520.00' cy='40.00' r='3' fill='#2F80ED'/><circle cx='680.00' cy='40.00' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='40.00' font-size='11' fill='#2F80ED'>9.00</text>
+      </svg>
+    </div>
+    
+    <div class='chart'>
+      <div class='chart-title'>总执行时间(秒)</div>
+      <svg width='720' height='220' viewBox='0 0 720 220'>
+        <line x1='40' y1='180' x2='680' y2='180' stroke='#999' stroke-width='1'/><line x1='40' y1='40' x2='40' y2='180' stroke='#999' stroke-width='1'/>
+        <polyline fill='none' stroke='#2F80ED' stroke-width='2' points='40.00,180.00 200.00,40.00 360.00,73.41 520.00,118.97 680.00,147.70' />
+        <circle cx='40.00' cy='180.00' r='3' fill='#2F80ED'/><circle cx='200.00' cy='40.00' r='3' fill='#2F80ED'/><circle cx='360.00' cy='73.41' r='3' fill='#2F80ED'/><circle cx='520.00' cy='118.97' r='3' fill='#2F80ED'/><circle cx='680.00' cy='147.70' r='3' fill='#2F80ED'/>
+        <text x='40.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769648153</text><text x='200.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769665848</text><text x='360.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769666258</text><text x='520.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769668063</text><text x='680.00' y='212' font-size='10' text-anchor='middle' fill='#666'>1769846401</text>
+        <text x='686.00' y='147.70' font-size='11' fill='#2F80ED'>0.12</text>
+      </svg>
+    </div>
+    
+      
+    <div class='chart'>
+      <div class='chart-title'>最新运行：三智能体执行时间占比</div>
+      <svg width='720' height='80' viewBox='0 0 720 80'>
+        <rect x='20' y='20' width='167.4362553191489' height='30' fill='#27AE60' />
+        <rect x='187.4362553191489' y='20' width='293.8699574468085' height='30' fill='#F2994A' />
+        <rect x='481.3062127659574' y='20' width='218.69378723404256' height='30' fill='#EB5757' />
+        <text x='20' y='70' font-size='11' fill='#e8e8e8'>机床 0.029s</text>
+        <text x='140' y='70' font-size='11' fill='#e8e8e8'>AGV 0.051s</text>
+        <text x='260' y='70' font-size='11' fill='#e8e8e8'>机器人 0.038s</text>
+      </svg>
+    </div>
+    
+    </div>
+
+    <div class='card'>
+      <div class='note'>说明：曲线展示同一脚本多次运行的指标变化，用于直观看到优化带来的趋势变化。</div>
+    </div>
+  </div>
+</body>
+</html>

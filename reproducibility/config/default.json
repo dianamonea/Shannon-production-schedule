@@ -1,0 +1,41 @@
+{
+  "experiment": {
+    "seed": 42,
+    "num_trials": 25,
+    "timeout": 300
+  },
+  "model": {
+    "gnn": {
+      "layers": 3,
+      "hidden_dim": 128,
+      "aggregation": "mean"
+    },
+    "transformer": {
+      "heads": 4,
+      "layers": 2,
+      "ff_dim": 256,
+      "dropout": 0.1
+    }
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "num_epochs": 100,
+    "weight_decay": 1e-05,
+    "early_stopping_patience": 10
+  },
+  "data": {
+    "train_maps": 100,
+    "val_maps": 20,
+    "test_maps": 50,
+    "agents_min": 10,
+    "agents_max": 200,
+    "map_types": [
+      "random",
+      "room",
+      "maze",
+      "warehouse",
+      "open"
+    ]
+  }
+}

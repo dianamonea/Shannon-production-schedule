@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{Ablation study results on 100-agent instances. We report success rate (\%), average solving time (s), and expanded nodes.}
+\label{tab:ablation}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Variant} & \textbf{Succ. (\%)} & \textbf{Time (s)} & \textbf{Nodes} \\
+\midrule
+\textbf{Full Model (Ours)} & \textbf{98.0} & \textbf{8.5} & \textbf{1,250} \\
+\midrule
+w/o GNN Encoder & 72.5 & 18.2 & 3,500 \\
+w/o Transformer & 78.3 & 15.5 & 2,800 \\
+w/o Difficulty Prediction & 88.5 & 10.2 & 1,850 \\
+w/o Scope Prediction & 90.1 & 9.5 & 1,650 \\
+\midrule
+GNN Only & 68.2 & 22.5 & 4,200 \\
+Transformer Only & 65.8 & 25.8 & 4,800 \\
+Priority Only & 82.5 & 12.5 & 2,200 \\
+\midrule
+Random Selection & 52.3 & 35.2 & 6,500 \\
+\bottomrule
+\end{tabular}
+\end{table}

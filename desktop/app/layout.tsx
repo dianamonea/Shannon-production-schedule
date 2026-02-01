@@ -56,9 +56,15 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="zh-CN" suppressHydrationWarning>
+            <head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="color-scheme" content="light dark" />
+            </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                role="application"
             >
                 <Providers>
                     {children}

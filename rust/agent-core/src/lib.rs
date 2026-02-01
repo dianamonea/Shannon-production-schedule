@@ -18,3 +18,8 @@ pub mod tracing;
 
 #[cfg(feature = "wasi")]
 pub mod wasi_sandbox;
+
+// Manufacturing hardware integration modules
+pub mod ros_bridge;
+pub mod capability_manager;
+pub mod interrupt_handler;

@@ -1,0 +1,32 @@
+{
+  "name": "Challenging Failure Case",
+  "description": "A scenario where LG-CBS performs suboptimally, providing insights into model limitations.",
+  "map_type": "Complex Maze",
+  "num_agents": 30,
+  "map_size": [
+    32,
+    32
+  ],
+  "cbs_metrics": {
+    "solving_time": 180.5,
+    "nodes_expanded": 25000,
+    "conflicts_resolved": 520,
+    "makespan": 95,
+    "sum_of_costs": 1850
+  },
+  "lgcbs_metrics": {
+    "solving_time": 55.2,
+    "nodes_expanded": 8500,
+    "conflicts_resolved": 520,
+    "makespan": 95,
+    "sum_of_costs": 1850,
+    "prediction_accuracy": 0.62,
+    "top_3_accuracy": 0.75
+  },
+  "key_insights": [
+    "Complex maze structures with many dead-ends reduce prediction accuracy",
+    "The model struggles when local features don't reflect global structure",
+    "Still achieves 3.3\u00d7 speedup despite lower prediction quality",
+    "Suggests potential improvements: global context features, graph pooling"
+  ]
+}

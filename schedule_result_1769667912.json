@@ -1,0 +1,58 @@
+{
+  "session_id": "e0ca6b78-77d2-4784-8298-ceed135af210",
+  "session_info": {
+    "id": "e0ca6b78-77d2-4784-8298-ceed135af210",
+    "session_id": "e0ca6b78-77d2-4784-8298-ceed135af210",
+    "name": "machining_schedule_1769667911",
+    "workflow_id": "task-00000000-0000-0000-0000-000000000002-1769667911",
+    "status": "created",
+    "timestamp": "2026-01-29T14:25:11.878963"
+  },
+  "timestamp": "2026-01-29T14:25:12.146372",
+  "disturbances_detected": [
+    {
+      "type": "urgent_order",
+      "severity": "critical",
+      "description": "新增紧急订单 PART-URGENT，要求4小时内完成",
+      "affected_resource": "new_urgent_part",
+      "impact_duration": 0
+    },
+    {
+      "type": "agv_breakdown",
+      "severity": "high",
+      "description": "AGV-01 导航系统故障，无法正常运输",
+      "affected_resource": "AGV-01",
+      "impact_duration": 90
+    },
+    {
+      "type": "quality_issue",
+      "severity": "medium",
+      "description": "PART-003 检测发现尺寸偏差，需返工",
+      "affected_resource": "PART-003",
+      "impact_duration": 45
+    },
+    {
+      "type": "material_delay",
+      "severity": "medium",
+      "description": "钛合金原材料供应商延迟2小时交货",
+      "affected_resource": "material_titanium",
+      "impact_duration": 120
+    },
+    {
+      "type": "operator_shortage",
+      "severity": "medium",
+      "description": "夜班操作员请假，人手减少1人",
+      "affected_resource": "operator_team",
+      "impact_duration": 480
+    },
+    {
+      "type": "power_fluctuation",
+      "severity": "low",
+      "description": "车间电力限制，机床功率需降低20%",
+      "affected_resource": "power_system",
+      "impact_duration": 60
+    }
+  ],
+  "disturbance_responses": [
+    {
+      "disturbance": 

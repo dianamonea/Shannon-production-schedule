@@ -1,0 +1,26 @@
+# Training configuration for v1 BC model
+
+model:
+  hidden_dim: 256
+  num_layers: 4
+  num_heads: 8
+  dropout: 0.1
+  max_robots: 10
+  max_jobs: 50
+  max_stations: 20
+
+training:
+  lr: 1.0e-4
+  epochs: 50
+  warmup_steps: 1000
+  weight_decay: 1.0e-5
+  device: "cpu"  # "cpu" or "cuda"
+  checkpoint_dir: "./checkpoints"
+  log_interval: 10
+
+dataset:
+  episode_dir: "./data/episodes"
+  sequence_length: 4
+  train_split: 0.8
+  batch_size: 32
+  shuffle: true

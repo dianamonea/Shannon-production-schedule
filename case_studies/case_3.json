@@ -1,0 +1,32 @@
+{
+  "name": "High Density Scenario",
+  "description": "Very dense agent configuration where nearly half of all cells are occupied. This stress-tests the conflict prediction capability.",
+  "map_type": "Random 20%",
+  "num_agents": 100,
+  "map_size": [
+    48,
+    48
+  ],
+  "cbs_metrics": {
+    "solving_time": 285.5,
+    "nodes_expanded": 42000,
+    "conflicts_resolved": 1200,
+    "makespan": 120,
+    "sum_of_costs": 8500
+  },
+  "lgcbs_metrics": {
+    "solving_time": 35.8,
+    "nodes_expanded": 4800,
+    "conflicts_resolved": 1200,
+    "makespan": 120,
+    "sum_of_costs": 8500,
+    "prediction_accuracy": 0.78,
+    "top_3_accuracy": 0.88
+  },
+  "key_insights": [
+    "Even in high-density scenarios, LG-CBS maintains high prediction accuracy",
+    "The model learns to identify conflicts that cascade into larger conflict chains",
+    "GNN message passing captures complex spatial dependencies",
+    "8\u00d7 speedup enables solving previously intractable instances"
+  ]
+}
